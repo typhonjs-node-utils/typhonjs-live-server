@@ -88,7 +88,11 @@ export default class LiveServer
    {
       if (typeof userOptions !== 'object') { throw new TypeError(`'userOptions' is not an 'object'.`); }
 
-      if (!server)
+      if (server)
+      {
+         console.log('[W] typhonjs-live-server warning: The server has already been started.');
+      }
+      else
       {
          // Default to only error output - 0 = errors only, 1 = some, 2 = lots
          const params = { logLevel: 0 };
@@ -121,12 +125,13 @@ export default class LiveServer
             {
                const browser = options.browser || null;
 
-               const protocol = typeof options.https === 'boolean' && options ? 'https' : 'http';
+               const protocol = typeof options.https === 'boolean' && options.https ? 'https' : 'http';
                const address = server.address().address === '0.0.0.0' ? '127.0.0.1' : server.address().address;
                const port = server.address().port;
                const openURL = `${protocol}://${address}:${port}`;
 
-               const opnOptions = Object.assign({ app: browser, wait: false }, options.opnOptions);
+               const opnOptions = Object.assign({ app: browser, wait: false },
+                typeof options.opnOptions === 'object' ? options.opnOptions : {});
 
                if (Array.isArray(openPath))
                {
