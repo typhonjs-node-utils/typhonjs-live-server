@@ -1,7 +1,7 @@
 {
   "name": "typhonjs-live-server",
   "version": "0.0.2",
-  "description": "Provides ANSI color logging.",
+  "description": "Provides a typhonjs-plugin-manager plugin wrapping `live-server` adding event bindings and workarounds for graceful shutdown.",
   "author": "typhonrt",
   "homepage": "https://github.com/typhonjs-node-utils/typhonjs-live-server",
   "license": "MPL-2.0",
