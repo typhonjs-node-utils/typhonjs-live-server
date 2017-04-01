@@ -44,6 +44,44 @@ export default class LiveServer
    }
 
    /**
+    * Opens a browser that the live server is hosting. Launch browser with additional `wait` option set to false for
+    * `opn` invocation separating the browser process from this process. You may pass in `opnOptions` to provide
+    * further option overrides for `opn` invocation.
+    *
+    * @param {string}   [targetBrowser=options.browser] - The browser to open.
+    */
+   static open(targetBrowser = options.browser)
+   {
+      if (!server && !options)
+      {
+         console.log('[W] typhonjs-live-server warning: The server is not running.');
+      }
+      else
+      {
+         const browser = targetBrowser || null;
+
+         const openPath = typeof options.openPath !== 'undefined' ? options.openPath : '';
+
+         const protocol = typeof options.https === 'boolean' && options.https ? 'https' : 'http';
+         const address = server.address().address === '0.0.0.0' ? '127.0.0.1' : server.address().address;
+         const port = server.address().port;
+         const openURL = `${protocol}://${address}:${port}`;
+
+         const opnOptions = Object.assign({ app: browser, wait: false },
+          typeof options.opnOptions === 'object' ? options.opnOptions : {});
+
+         if (Array.isArray(openPath))
+         {
+            openPath.forEach((p) => opn(openURL + p, opnOptions));
+         }
+         else
+         {
+            opn(openURL + openPath, opnOptions);
+         }
+      }
+   }
+
+   /**
     * Adds event bindings to start / shutdown `live-server`.
     *
     * @param {PluginEvent} ev - The plugin event.
@@ -54,6 +92,7 @@ export default class LiveServer
 
       pluginOptions = ev.pluginOptions;
 
+      eventbus.on('typhonjs:util:live:server:open', LiveServer.open);
       eventbus.on('typhonjs:util:live:server:options:get', () => LiveServer.options);
       eventbus.on('typhonjs:util:live:server:running', () => LiveServer.isRunning);
       eventbus.on('typhonjs:util:live:server:server:get', () => LiveServer.server);
@@ -94,55 +133,27 @@ export default class LiveServer
       }
       else
       {
-         // Default to only error output - 0 = errors only, 1 = some, 2 = lots
-         const params = { logLevel: 0 };
+         // Default to only error output for `live-server` logLevel - 0 = errors only, 1 = some, 2 = lots
+         // Default to opening browser.
+         const params = { logLevel: 0, open: true };
 
          // Combine live server config options and store.
          options = Object.assign(params, pluginOptions, userOptions);
 
-         // Store current open option and always set open to false for passing to `live-server`.
-         const open = typeof options.open === 'boolean' ? options.open : true;
+         // Create a copy of options to send to `live-server`.
+         const optionsCopy = JSON.parse(JSON.stringify(options));
 
-         // Determine the openPath before forcing `options.open` to false.
-         const openPath = (options.open === undefined || options.open === true) ? '' :
-          ((options.open === null || options.open === false) ? null : options.open);
-
-         // Always set `live-server` open option to false as opening the browser is handled below.
-         options.open = false;
+         // Always set `live-server` open option to false as opening the browser is handled locally.
+         optionsCopy.open = false;
 
          // Start live server.
-         server = liveServer.start(options);
+         server = liveServer.start(optionsCopy);
 
          // Ensure that sockets will not keep alive the process.
          server.on('connection', (socket) => socket.unref());
 
-         // Directly launch browser with additional `wait` option set to false for `opn` invocation separating the
-         // browser process from this process. You may pass in `opnOptions` to provide further option overrides for
-         // `opn` invocation.
-         if (open)
-         {
-            server.on('listening', () =>
-            {
-               const browser = options.browser || null;
-
-               const protocol = typeof options.https === 'boolean' && options.https ? 'https' : 'http';
-               const address = server.address().address === '0.0.0.0' ? '127.0.0.1' : server.address().address;
-               const port = server.address().port;
-               const openURL = `${protocol}://${address}:${port}`;
-
-               const opnOptions = Object.assign({ app: browser, wait: false },
-                typeof options.opnOptions === 'object' ? options.opnOptions : {});
-
-               if (Array.isArray(openPath))
-               {
-                  openPath.forEach((p) => opn(openURL + p, opnOptions));
-               }
-               else
-               {
-                  opn(openURL + openPath, opnOptions);
-               }
-            });
-         }
+         // Potentially open the default browser when server is ready.
+         if (options.open) { server.on('listening', () => LiveServer.open()); }
       }
 
       return server;

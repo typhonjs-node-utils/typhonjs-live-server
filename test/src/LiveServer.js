@@ -26,7 +26,7 @@ describe('LiveServer', () =>
 
    describe('server tests', () =>
    {
-      let pluginManager = new PluginManager({ eventbus });
+      const pluginManager = new PluginManager({ eventbus });
       let server;
 
       pluginManager.add({ name: 'typhonjs-live-server', instance: LiveServer, options: { test: true } });
@@ -62,7 +62,7 @@ describe('LiveServer', () =>
       {
          const options = eventbus.triggerSync('typhonjs:util:live:server:options:get');
 
-         assert.strictEqual(JSON.stringify(options), '{"logLevel":0,"test":true,"open":false,"root":"./test/fixture"}');
+         assert.strictEqual(JSON.stringify(options), '{"logLevel":0,"open":false,"test":true,"root":"./test/fixture"}');
       });
 
       it('get index', (done) =>
