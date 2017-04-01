@@ -1,6 +1,6 @@
 {
   "name": "typhonjs-live-server",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Provides a typhonjs-plugin-manager plugin wrapping `live-server` adding event bindings and workarounds for graceful shutdown.",
   "author": "typhonrt",
   "homepage": "https://github.com/typhonjs-node-utils/typhonjs-live-server",
