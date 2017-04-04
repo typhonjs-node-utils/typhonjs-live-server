@@ -9,5 +9,5 @@
 [![Coverage](https://img.shields.io/codecov/c/github/typhonjs-node-utils/typhonjs-live-server.svg)](https://codecov.io/github/typhonjs-node-utils/typhonjs-live-server)
 [![Dependency Status](https://david-dm.org/typhonjs-node-utils/typhonjs-live-server.svg)](https://david-dm.org/typhonjs-node-utils/typhonjs-live-server)
 
-Provides a typhonjs-plugin-mananger enabled plugin wrapping [live-server](https://www.npmjs.com/package/live-server) 
+Provides a [typhonjs-plugin-manager](https://www.npmjs.com/package/typhonjs-plugin-manager) enabled plugin wrapping [live-server](https://www.npmjs.com/package/live-server) 
 adding event bindings and workarounds for graceful shutdown.
