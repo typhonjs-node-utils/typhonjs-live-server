@@ -95,7 +95,7 @@ export default class LiveServer
       eventbus.on('typhonjs:util:live:server:open', LiveServer.open);
       eventbus.on('typhonjs:util:live:server:options:get', () => LiveServer.options);
       eventbus.on('typhonjs:util:live:server:running', () => LiveServer.isRunning);
-      eventbus.on('typhonjs:util:live:server:server:get', () => LiveServer.server);
+      eventbus.on('typhonjs:util:live:server:get', () => LiveServer.server);
       eventbus.on('typhonjs:util:live:server:shutdown', LiveServer.shutdown);
       eventbus.on('typhonjs:util:live:server:start', LiveServer.start);
    }

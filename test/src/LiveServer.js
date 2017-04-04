@@ -53,7 +53,7 @@ describe('LiveServer', () =>
 
       it('server binding', () =>
       {
-         const testServer = eventbus.triggerSync('typhonjs:util:live:server:server:get');
+         const testServer = eventbus.triggerSync('typhonjs:util:live:server:get');
 
          assert.strictEqual(testServer, server);
       });
